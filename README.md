@@ -23,7 +23,7 @@ LZWDecompressor.java
 Supporting .class files and icons.
 
 # Steps to Run
-**Option 1: Using an IDE **
+**Option 1: Using an IDE**
 Open an Integrated Development Environment (IDE) like IntelliJ IDEA, Eclipse, or VS Code.
 Import the project folder into the IDE.
 Compile all the .java files.
