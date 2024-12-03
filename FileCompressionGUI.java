@@ -33,10 +33,8 @@ public class FileCompressionGUI extends JFrame {
         filePathField = new JTextField(40);
         filePathField.setEditable(false);
 
-        
         fileChooser = new JFileChooser();
         
-
         compressButton = new JButton("Compress");
         compressButton.setBackground(new Color(50, 205, 50)); // Green button
         compressButton.setForeground(Color.WHITE);
