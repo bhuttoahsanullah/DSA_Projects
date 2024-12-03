@@ -26,15 +26,15 @@ public class FileCompressionGUI extends JFrame {
 
         ImageIcon image = new ImageIcon("Icon.jpg");
         setIconImage(image.getImage());
-        
+
         // Set background color
         getContentPane().setBackground(new Color(240, 248, 255));
-        
+
         filePathField = new JTextField(40);
         filePathField.setEditable(false);
 
         fileChooser = new JFileChooser();
-        
+
         compressButton = new JButton("Compress");
         compressButton.setBackground(new Color(50, 205, 50)); // Green button
         compressButton.setForeground(Color.WHITE);
@@ -71,10 +71,11 @@ public class FileCompressionGUI extends JFrame {
 
                 if (password != null && !password.isEmpty()) {
                     decryptAndDecompressFile(inputPath, outputPath, password);
-                } 
+                }
                 // else if (password == null) { // Skip button clicked
-                //     JOptionPane.showMessageDialog(this, "Decompression requires a password. Operation canceled.");
-                // } 
+                // JOptionPane.showMessageDialog(this, "Decompression requires a password.
+                // Operation canceled.");
+                // }
                 else {
                     decompressFile(inputPath, outputPath);
                 }
@@ -95,31 +96,29 @@ public class FileCompressionGUI extends JFrame {
             }
         });
 
-  
-  // Panel for file path and Browse button (top section)
-  JPanel topPanel = new JPanel();
-  topPanel.setLayout(new FlowLayout(FlowLayout.CENTER)); // Center the file path and browse button
-  topPanel.add(filePathField);
-  topPanel.add(chooseFileButton);
+        // Panel for file path and Browse button (top section)
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new FlowLayout(FlowLayout.CENTER)); // Center the file path and browse button
+        topPanel.add(filePathField);
+        topPanel.add(chooseFileButton);
 
+        // Panel for Compress and Decompress buttons (bottom section)
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER)); // Center the buttons
+        bottomPanel.add(compressButton);
+        bottomPanel.add(decompressButton);
 
-  // Panel for Compress and Decompress buttons (bottom section)
-  JPanel bottomPanel = new JPanel();
-  bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER)); // Center the buttons
-  bottomPanel.add(compressButton);
-  bottomPanel.add(decompressButton);
-
-  // Set layout for the frame
-  setLayout(new BorderLayout());
-  add(topPanel, BorderLayout.NORTH);  // Add the top panel with file path and browse button
-  add(bottomPanel, BorderLayout.CENTER);  // Add the bottom panel with Compress and Decompress buttons
+        // Set layout for the frame
+        setLayout(new BorderLayout());
+        add(topPanel, BorderLayout.NORTH); // Add the top panel with file path and browse button
+        add(bottomPanel, BorderLayout.CENTER); // Add the bottom panel with Compress and Decompress buttons
 
     }
 
     private void compressFile(String inputPath, String outputPath) {
         try (FileInputStream fis = new FileInputStream(inputPath);
-             FileOutputStream fos = new FileOutputStream(outputPath);
-             ZipOutputStream zipOut = new ZipOutputStream(fos)) {
+                FileOutputStream fos = new FileOutputStream(outputPath);
+                ZipOutputStream zipOut = new ZipOutputStream(fos)) {
             ZipEntry zipEntry = new ZipEntry(new File(inputPath).getName());
             zipOut.putNextEntry(zipEntry);
 
@@ -138,8 +137,8 @@ public class FileCompressionGUI extends JFrame {
 
     private void compressAndEncryptFile(String inputPath, String outputPath, String password) {
         try (FileInputStream fis = new FileInputStream(inputPath);
-             FileOutputStream fos = new FileOutputStream(outputPath);
-             CipherOutputStream cos = new CipherOutputStream(fos, initCipher(password, Cipher.ENCRYPT_MODE))) {
+                FileOutputStream fos = new FileOutputStream(outputPath);
+                CipherOutputStream cos = new CipherOutputStream(fos, initCipher(password, Cipher.ENCRYPT_MODE))) {
 
             ZipOutputStream zipOut = new ZipOutputStream(cos);
             ZipEntry zipEntry = new ZipEntry(new File(inputPath).getName());
@@ -161,13 +160,13 @@ public class FileCompressionGUI extends JFrame {
 
     private void decompressFile(String inputPath, String outputPath) {
         try (FileInputStream fis = new FileInputStream(inputPath);
-             ZipInputStream zipIn = new ZipInputStream(fis)) {
-    
+                ZipInputStream zipIn = new ZipInputStream(fis)) {
+
             ZipEntry entry = zipIn.getNextEntry();
             if (entry != null) {
                 String originalFileName = entry.getName(); // Extract original file name
                 outputPath = inputPath.substring(0, inputPath.lastIndexOf('.')) + "_" + originalFileName;
-    
+
                 try (FileOutputStream fos = new FileOutputStream(outputPath)) {
                     byte[] buffer = new byte[1024];
                     int length;
@@ -181,17 +180,17 @@ public class FileCompressionGUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Error Decompressing File: " + e.getMessage());
         }
     }
-        
+
     private void decryptAndDecompressFile(String inputPath, String outputPath, String password) {
         try (FileInputStream fis = new FileInputStream(inputPath);
-             CipherInputStream cis = new CipherInputStream(fis, initCipher(password, Cipher.DECRYPT_MODE));
-             ZipInputStream zipIn = new ZipInputStream(cis)) {
-    
+                CipherInputStream cis = new CipherInputStream(fis, initCipher(password, Cipher.DECRYPT_MODE));
+                ZipInputStream zipIn = new ZipInputStream(cis)) {
+
             ZipEntry entry = zipIn.getNextEntry();
             if (entry != null) {
                 String originalFileName = entry.getName();
                 outputPath = inputPath.substring(0, inputPath.lastIndexOf('.')) + "_" + originalFileName;
-    
+
                 try (FileOutputStream fos = new FileOutputStream(outputPath)) {
                     byte[] buffer = new byte[1024];
                     int length;
@@ -206,14 +205,15 @@ public class FileCompressionGUI extends JFrame {
         } catch (javax.crypto.BadPaddingException e) {
             JOptionPane.showMessageDialog(this, "Error: Incorrect password or file corrupted (BadPaddingException).");
         } catch (javax.crypto.IllegalBlockSizeException e) {
-            JOptionPane.showMessageDialog(this, "Error: Incorrect password or file corrupted (IllegalBlockSizeException).");
+            JOptionPane.showMessageDialog(this,
+                    "Error: Incorrect password or file corrupted (IllegalBlockSizeException).");
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error reading or decompressing file: " + e.getMessage());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Unexpected error: " + e.getMessage());
         }
     }
-            
+
     private Cipher initCipher(String password, int mode) throws Exception {
         byte[] key = Arrays.copyOf(MessageDigest.getInstance("SHA-256").digest(password.getBytes("UTF-8")), 16);
         SecretKey secretKey = new SecretKeySpec(key, "AES");
