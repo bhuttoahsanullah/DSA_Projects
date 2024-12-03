@@ -30,6 +30,7 @@ public class FileCompressionGUI extends JFrame {
         
         // Set background color
         getContentPane().setBackground(new Color(240, 248, 255));
+        
         filePathField = new JTextField(40);
         filePathField.setEditable(false);
 
